@@ -161,3 +161,5 @@ This library uses the native NodeJS REPL library and the [Pulumi Automation API]
 ### Caveats & Immutability
 
 When you execute commands in the REPL, you're still running pulumi code. Because Pulumi is declarative and desired state, resources can't be mutated after they are instantiated in the REPL. You'll have to exit the session and restart to "make an edit". Each REPL session will compute differences against the previous state. If you define a resource in one session and then forget it in the next one, it will be deleted. This is just like making edits and running a normal pulumi program, the only difference is that we get to create resources incrementally and explore their shape, outputs, etc.
+
+Read more about Pulumi's desired state architecture: https://www.pulumi.com/docs/intro/concepts/how-pulumi-works/
