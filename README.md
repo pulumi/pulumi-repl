@@ -8,6 +8,11 @@ Create cloud infrastructure and explore pulumi in an interactive NodeJS REPL.
 4. Create ephemeral sessions that automatically delete all resources on `ctrl+c`.
 
 Just a few lines of code to get started:
+
+```sh
+yarn install pulumi-repl
+```
+
 ```ts
 import { PulumiRepl } from "pulumi-repl";
 
