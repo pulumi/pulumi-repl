@@ -1,0 +1,32 @@
+{
+  "name": "pulumi-repl",
+  "version": "0.0.1",
+  "description": "Import and run Pulumi in a REPL.",
+  "main": "bin/index.js",
+  "types": "bin/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "link": "yarn run build && yarn link",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/EvanBoyle/pulumi-repl"
+  },
+  "keywords": [
+    "pulumi",
+    "repl"
+  ],
+  "author": "Evan Boyle",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@pulumi/aws": "^4.3.0",
+    "@pulumi/azure-native": "^1.5.0",
+    "@pulumi/gcp": "^5.2.0",
+    "@pulumi/kubernetes": "^3.1.1",
+    "@pulumi/pulumi": "^3.2.1"
+  },
+  "devDependencies": {
+    "@types/node": "^15.0.2"
+  }
+}
