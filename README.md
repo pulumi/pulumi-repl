@@ -27,7 +27,7 @@ repl.start().catch(err => console.error(err));
 
 ### Kubernetes
 
-Create kubernetes resources interactively!
+Create kubernetes resources interactively! At the end, all created resources are saved in stae by the pulumi engine.
 
 ![](gifs/k8s.gif)
 
@@ -157,3 +157,7 @@ Advanced workspace configuration options are available including custom backends
 ## How it works
 
 This library uses the native NodeJS REPL library and the [Pulumi Automation API](https://www.pulumi.com/docs/guides/automation-api/) (OSS) which turns the Pulumi IaC engine into an embeddable SDK. 
+
+### Caveats & Immutability
+
+When you execute commands in the REPL, you're still running pulumi code. Because Pulumi is declarative and desired state, resources can't be mutated after they are instantiated in the REPL. You'll have to exit the session and restart to "make an edit". Each REPL session will compute differences against the previous state. If you define a resource in one session and then forget it in the next one, it will be deleted. This is just like making edits and running a normal pulumi program, the only difference is that we get to create resources incrementally and explore their shape, outputs, etc.
