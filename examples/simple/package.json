@@ -1,0 +1,13 @@
+{
+  "name": "simple",
+  "version": "1.0.0",
+  "description": "simple pulumi-repl example",
+  "main": "bin/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "tsc && node ./bin/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

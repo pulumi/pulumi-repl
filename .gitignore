@@ -1,3 +1,9 @@
+# Pulumi
+Pulumi*.yaml
+
+# Build
+bin
+
 # Logs
 logs
 *.log
