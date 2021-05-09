@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pulumi/random": "^4.0.0"
+    "@pulumi/random": "^4.0.0",
+    "pulumi-repl": "^0.0.1"
   }
 }
