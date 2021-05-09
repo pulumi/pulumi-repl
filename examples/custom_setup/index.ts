@@ -6,6 +6,7 @@ const repl = new prepl.PulumiRepl({
     stack: "dev",
     project: "custom_setup",
     ephemeral: true, // delete stack resources on repl exit
+    eject: true, // write out resulting program to ./eject
     config: {
         "hello": { value: "world"} 
         /**

@@ -6,6 +6,9 @@ import * as azure from "@pulumi/azure-native";
 import * as k8s from "@pulumi/kubernetes"
 
 const repl = require("repl");
+const fs = require("fs");
+const os = require('os');
+const { sep } = require('path');
 
 export interface ReplArgs {
     // the name of the stack to initialize.
@@ -18,6 +21,8 @@ export interface ReplArgs {
     ephemeral?: boolean;
     // the directory to initialize your 'Pulumi.yaml', defaults to '.'.
     workDir?: string;
+    // saves repl as a pulumi program in `./eject` on repl exit.
+    eject?: boolean;
     // granular options for pulumi stack, project, and workspace settings.
     workspaceOpts?: auto.LocalWorkspaceOptions;
 }
@@ -45,6 +50,25 @@ export class PulumiRepl {
     private __pluginPromise: Promise<any>;
     private __configPromise: Promise<any>;
     private __ephemeral = false;
+    private __preamble: string[] = [
+        `const pulumi = require("@pulumi/pulumi");`,
+        `const aws = require("@pulumi/aws");`,
+        `const azure = require("@pulumi/azure-native");`,
+        `const gcp = require("@pulumi/gcp");`,
+        `const k8s = require("@pulumi/kubernetes");`,
+        ``,
+        `const __outputs = {};`,
+        `const registerOutput = (k, v) => { __outputs[k] = v; };`,
+        ``,
+    ];
+    private __postamble: string[] = [
+        ``,
+        `module.exports = __outputs;`,
+        ``
+    ];
+    private __eject: boolean = false;
+    private __project: string;
+    private __historyFile: string;
     constructor(args: ReplArgs) {
         const program = this.__initProgram();
         const workspaceOpts: auto.LocalWorkspaceOptions = args.workspaceOpts ? args.workspaceOpts : {};
@@ -54,6 +78,7 @@ export class PulumiRepl {
         if (!workspaceOpts.workDir) {
             workspaceOpts.workDir = ".";
         }
+        this.__project = args.project;
         this.__ephemeral = !!args.ephemeral;
         const autoArgs: auto.InlineProgramArgs = {
             stackName: args.stack,
@@ -67,6 +92,7 @@ export class PulumiRepl {
         } else {
             this.__configPromise = Promise.resolve();
         }
+        this.__eject = !!args.eject;
     }
     // starts execution of the REPL, returns a promise that resolves with execution result.
     async start(): Promise<ReplResult> {
@@ -92,12 +118,27 @@ export class PulumiRepl {
             console.log("destroy complete!");
         }
 
+        if (this.__eject) {
+            this.__doEject();
+        }
+
         return result;
     }
     // add a value to the REPL execution. This supports including additional pulumi provider SDKs.
     public addContext(key: string, value: any) {
         const context = this.__repl ? this.__repl.context : this.__context;
         context[key] = value;
+    }
+    // 
+    private __doEject() {
+        const history = fs.readFileSync(this.__historyFile, {encoding:'utf8', flag:'r'});
+        const commands = history.split("\n").reverse();
+        const program = this.__preamble.concat(commands, this.__postamble).join("\n");
+        if (!fs.existsSync("./eject")) fs.mkdirSync("./eject", '0777', true);
+        fs.writeFileSync("./eject/index.js", program);
+        fs.writeFileSync("./eject/package.json", this.__getEjectPackageJson());
+        fs.writeFileSync("./eject/Pulumi.yaml", this.__getEjectPulumiYaml());
+        
     }
     private async __initializePlugins() {
         const stack = await this.stack;
@@ -121,11 +162,17 @@ export class PulumiRepl {
                 resolveHandler = resolve;
                 rejectHandler = reject;
             });
-            this.__repl = repl.start('pulumi-repl> ');
+            this.__repl = repl.start({ prompt: 'pulumi-repl> ' });
             const contextKeys = Object.keys(this.__context);
             for (let key of contextKeys) {
                 this.__repl.context[key] = this.__context[key];
             }
+
+            const tmpDir = os.tmpdir(); 
+            var tmpdir = fs.mkdtempSync(`${tmpDir}${sep}`);
+            this.__historyFile = `${tmpdir}/history.txt`;
+
+            this.__repl.setupHistory(this.__historyFile, () => {});
 
             this.__repl.on('exit', () => {
                 console.log('Exit signal received.');
@@ -140,5 +187,27 @@ export class PulumiRepl {
         };
 
         return pulumiProgram;
+    }
+    private __getEjectPulumiYaml() {
+        return `name: ${this.__project}
+runtime: nodejs
+`;
+    }
+    private __getEjectPackageJson() {
+        return `
+{
+    "name": "eject",
+    "version": "1.0.0",
+    "description": "Your ejected pulumi repl program",
+    "main": "index.js",
+    "dependencies": {
+        "@pulumi/aws": "^4.3.0",
+        "@pulumi/azure-native": "^1.5.0",
+        "@pulumi/gcp": "^5.2.0",
+        "@pulumi/kubernetes": "^3.1.1",
+        "@pulumi/pulumi": "^3.2.1"
+    }
+}
+`;
     }
 }
