@@ -2,6 +2,9 @@
 
 Create cloud infrastructure and explore pulumi in an interactive NodeJS REPL.
 
+[![NPM version](https://badge.fury.io/js/pulumi-repl.svg)](https://npmjs.com/package/pulumi-repl)
+
+
 1. Create and explore cloud infrastructure.
 2. Run `apply` and experiment with other pulumi functionality.
 3. Save your work as a full pulumi program when you're done with `eject`!
