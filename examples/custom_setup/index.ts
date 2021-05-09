@@ -4,7 +4,7 @@ import * as random from "@pulumi/random";
 
 const repl = new PulumiRepl({
     stack: "dev",
-    project: "custom_setup",
+    project: "pulumi-repl-custom",
     ephemeral: true, // delete stack resources on repl exit
     eject: true, // write out resulting program to ./eject
     config: {

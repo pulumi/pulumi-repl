@@ -2,7 +2,7 @@ import { PulumiRepl } from "pulumi-repl";
 
 const repl = new PulumiRepl({
     stack: "dev",
-    project: "foo",
+    project: "pulumi-repl",
     config: {
         "aws:region": { value: "us-west-2" }
     },
