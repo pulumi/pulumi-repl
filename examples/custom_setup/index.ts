@@ -1,8 +1,8 @@
-import * as prepl from "pulumi-repl";
+import { PulumiRepl } from "pulumi-repl";
 // import a custom pulumi provider SDK.
 import * as random from "@pulumi/random";
 
-const repl = new prepl.PulumiRepl({
+const repl = new PulumiRepl({
     stack: "dev",
     project: "custom_setup",
     ephemeral: true, // delete stack resources on repl exit

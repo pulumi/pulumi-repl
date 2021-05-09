@@ -1,6 +1,6 @@
-import * as prepl from "pulumi-repl";
+import { PulumiRepl } from "pulumi-repl";
 
-const repl = new prepl.PulumiRepl({
+const repl = new PulumiRepl({
     stack: "dev",
     project: "foo",
     config: {
