@@ -105,6 +105,7 @@ export class PulumiRepl {
         result = {
             updateResult: await stack.up({
                 onOutput: console.log,
+                userAgent: "pulumi-repl"
             })
         };
         console.log("repl update complete!");
@@ -114,6 +115,7 @@ export class PulumiRepl {
             console.log("destroying ephemeral pulumi repl stack...")
             result.destroyResult = await stack.destroy({
                 onOutput: console.log,
+                userAgent: "pulumi-repl"
             });
             console.log("destroy complete!");
         }
