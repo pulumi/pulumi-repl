@@ -162,7 +162,7 @@ export class PulumiRepl {
                 resolveHandler = resolve;
                 rejectHandler = reject;
             });
-            this.__repl = repl.start({ prompt: 'pulumi-repl> ' });
+            this.__repl = repl.start({ prompt: 'pulumi-repl> ' , historySize: 10000});
             const contextKeys = Object.keys(this.__context);
             for (let key of contextKeys) {
                 this.__repl.context[key] = this.__context[key];
